@@ -71,9 +71,7 @@ const App: React.FC = () => {
       isOpen: true,
       title: 'Delete Book',
       message: `Are you sure you want to permanently delete "${bookToDelete.title}"? This action cannot be undone.`,
-      onConfirm: () => () => { // onConfirm is a function that calls the actual delete handler
-        confirmDeleteBook(bookId);
-      }
+      onConfirm: () => confirmDeleteBook(bookId),
     });
   };
 
@@ -106,16 +104,16 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 text-black">
+    <div className="min-h-screen w-full bg-[#F5EFE6] text-[#4A2C2A]">
       <main className="container mx-auto px-4 py-8 md:py-12">
         <header className="text-center mb-10 md:mb-16">
           <div className="flex justify-center items-center gap-4 mb-2">
-            <h1 className="text-4xl md:text-6xl font-bold text-black">My Book Collection</h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-[#4A2C2A]">My Book Collection</h1>
             <div className="flex items-center gap-2">
               {isAdminMode && (
                 <button
                   onClick={() => setIsAddBookModalOpen(true)}
-                  className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-full p-3 text-black hover:bg-white/80 transition-all shadow-md hover:shadow-lg"
+                  className="bg-[#E8DDCB]/60 backdrop-blur-xl border border-[#D7C0AE]/50 rounded-full p-3 text-[#4A2C2A] hover:bg-[#E8DDCB]/80 transition-all shadow-md hover:shadow-lg"
                   aria-label="Add new book"
                 >
                   <PlusIcon />
@@ -123,14 +121,14 @@ const App: React.FC = () => {
               )}
                <button
                   onClick={handleAdminToggle}
-                  className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-full p-3 text-black hover:bg-white/80 transition-all shadow-md hover:shadow-lg"
+                  className="bg-[#E8DDCB]/60 backdrop-blur-xl border border-[#D7C0AE]/50 rounded-full p-3 text-[#4A2C2A] hover:bg-[#E8DDCB]/80 transition-all shadow-md hover:shadow-lg"
                   aria-label={isAdminMode ? "Disable Admin Mode" : "Enable Admin Mode"}
                 >
                   {isAdminMode ? <UnlockIcon /> : <LockIcon />}
                 </button>
             </div>
           </div>
-          <p className="text-lg md:text-xl text-black/70">
+          <p className="text-lg md:text-xl text-[#6D4C41]/80">
             {isAdminMode ? "Admin mode enabled. You can now add and delete books." : "A relaxing journey through words and wonders"}
           </p>
         </header>

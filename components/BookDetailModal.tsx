@@ -3,6 +3,7 @@ import React from 'react';
 import { Book } from '../types';
 import { CloseIcon } from './icons/CloseIcon';
 import { TrashIcon } from './icons/TrashIcon';
+import { ShoppingCartIcon } from './icons/ShoppingCartIcon';
 
 interface BookDetailModalProps {
   book: Book;
@@ -17,7 +18,7 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
   return (
-    <div className="flex items-center text-yellow-400">
+    <div className="flex items-center text-[#A1887F]">
       {[...Array(fullStars)].map((_, i) => (
         <svg key={`full-${i}`} className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
       ))}
@@ -25,9 +26,9 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
         <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0v15z"/></svg>
       )}
       {[...Array(emptyStars)].map((_, i) => (
-        <svg key={`empty-${i}`} className="w-5 h-5 fill-current text-gray-300" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+        <svg key={`empty-${i}`} className="w-5 h-5 fill-current text-[#D7C0AE]" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
       ))}
-       <span className="ml-2 text-black/80 text-sm font-medium">{rating.toFixed(1)} / 5.0</span>
+       <span className="ml-2 text-[#6D4C41] text-sm font-medium">{rating.toFixed(1)} / 5.0</span>
     </div>
   );
 };
@@ -35,19 +36,19 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
 const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose, onDelete, isAdminMode }) => {
   return (
     <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-[#4A2C2A]/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="book-title"
     >
       <div
-        className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] text-black flex flex-col md:flex-row overflow-hidden animate-fade-in relative"
+        className="bg-[#E8DDCB]/60 backdrop-blur-xl border border-[#D7C0AE]/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] text-[#4A2C2A] flex flex-col md:flex-row overflow-hidden animate-fade-in relative"
         onClick={e => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-black/60 hover:text-black transition-colors z-10 p-1 rounded-full bg-black/10 hover:bg-black/20"
+          className="absolute top-4 right-4 text-[#6D4C41] hover:text-[#4A2C2A] transition-colors z-10 p-1 rounded-full bg-[#4A2C2A]/10 hover:bg-[#4A2C2A]/20"
           aria-label="Close modal"
         >
           <CloseIcon />
@@ -64,24 +65,39 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose, onDele
         <div className="p-6 md:p-8 flex flex-col overflow-y-auto modal-scrollbar">
           <div className="flex-grow">
             <h2 id="book-title" className="text-3xl md:text-4xl font-bold mb-2">{book.title}</h2>
-            <p className="text-lg text-black/70 mb-4">{book.author}</p>
+            <p className="text-lg text-[#6D4C41]/80 mb-4">{book.author}</p>
             <div className="mb-6">
               <StarRating rating={book.rating} />
             </div>
-            <p className="text-base leading-relaxed text-black/90">
+            <p className="text-base leading-relaxed text-[#4A2C2A]">
               {book.description}
             </p>
           </div>
-          {isAdminMode && (
-            <div className="mt-6 flex-shrink-0">
-              <button
-                onClick={() => onDelete(book.id)}
-                className="w-full flex items-center justify-center gap-2 bg-red-500/80 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition-colors"
-                aria-label={`Delete ${book.title}`}
-              >
-                <TrashIcon />
-                <span>Delete Book</span>
-              </button>
+          
+          {(book.purchaseUrl || isAdminMode) && (
+            <div className="mt-6 pt-6 border-t border-[#D7C0AE]/50 flex-shrink-0 flex flex-col gap-3">
+              {book.purchaseUrl && (
+                <a
+                  href={book.purchaseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-[#8D6E63] hover:bg-[#795548] text-white font-bold py-3 rounded-lg transition-colors"
+                  aria-label={`Purchase ${book.title}`}
+                >
+                  <ShoppingCartIcon />
+                  <span>Buy Now</span>
+                </a>
+              )}
+              {isAdminMode && (
+                <button
+                  onClick={() => onDelete(book.id)}
+                  className="w-full flex items-center justify-center gap-2 bg-[#A95C68]/90 hover:bg-[#A95C68] text-white font-bold py-3 rounded-lg transition-colors"
+                  aria-label={`Delete ${book.title}`}
+                >
+                  <TrashIcon />
+                  <span>Delete Book</span>
+                </button>
+              )}
             </div>
           )}
         </div>

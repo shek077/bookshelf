@@ -15,6 +15,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onClose, onAddBook, isAddin
   const [coverUrl, setCoverUrl] = useState('');
   const [description, setDescription] = useState('');
   const [rating, setRating] = useState<number | ''>('');
+  const [purchaseUrl, setPurchaseUrl] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,28 +31,29 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onClose, onAddBook, isAddin
       coverUrl,
       description,
       rating: Number(rating),
+      purchaseUrl,
     });
   };
 
-  const inputStyles = "w-full bg-white/50 border border-white/30 rounded-lg p-3 text-black placeholder-black/50 focus:outline-none focus:ring-2 focus:ring-black/50 transition-all disabled:opacity-50";
+  const inputStyles = "w-full bg-[#E8DDCB]/50 border border-[#D7C0AE]/50 rounded-lg p-3 text-[#4A2C2A] placeholder-[#6D4C41]/70 focus:outline-none focus:ring-2 focus:ring-[#6D4C41] transition-all disabled:opacity-50";
 
   return (
     <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-[#4A2C2A]/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="add-book-title"
     >
       <div
-        className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] text-black flex flex-col overflow-hidden animate-fade-in relative"
+        className="bg-[#E8DDCB]/60 backdrop-blur-xl border border-[#D7C0AE]/50 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] text-[#4A2C2A] flex flex-col overflow-hidden animate-fade-in relative"
         onClick={e => e.stopPropagation()}
       >
-        <div className="p-6 md:p-8 flex-shrink-0 border-b border-white/30">
+        <div className="p-6 md:p-8 flex-shrink-0 border-b border-[#D7C0AE]/50">
            <h2 id="add-book-title" className="text-2xl font-bold text-center">Add a New Book</h2>
            <button
              onClick={onClose}
-             className="absolute top-4 right-4 text-black/60 hover:text-black transition-colors z-10 p-1 rounded-full bg-black/10 hover:bg-black/20"
+             className="absolute top-4 right-4 text-[#6D4C41] hover:text-[#4A2C2A] transition-colors z-10 p-1 rounded-full bg-[#4A2C2A]/10 hover:bg-[#4A2C2A]/20"
              aria-label="Close modal"
            >
              <CloseIcon />
@@ -103,23 +105,30 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onClose, onAddBook, isAddin
                 className={inputStyles}
                 required
               />
+              <input
+                type="url"
+                placeholder="Purchase Link (Optional)"
+                value={purchaseUrl}
+                onChange={e => setPurchaseUrl(e.target.value)}
+                className={inputStyles}
+              />
             </div>
           </fieldset>
           
-          {error && <p className="text-red-600 text-sm">{error}</p>}
+          {error && <p className="text-[#A95C68] text-sm">{error}</p>}
           
           <div className="flex gap-4 mt-4">
             <button
               type="button"
               onClick={onClose}
-              className="w-full bg-black/10 hover:bg-black/20 text-black font-bold py-3 rounded-lg transition-colors disabled:opacity-50"
+              className="w-full bg-[#4A2C2A]/10 hover:bg-[#4A2C2A]/20 text-[#4A2C2A] font-bold py-3 rounded-lg transition-colors disabled:opacity-50"
               disabled={isAdding}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full bg-black hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#4A2C2A] hover:bg-[#3E2723] text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isAdding}
             >
               {isAdding ? 'Adding...' : 'Add Book'}

@@ -29,7 +29,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onSelect, onDelete, isAdminMo
         {isAdminMode && (
           <button
             onClick={handleDelete}
-            className="absolute top-2 right-2 z-10 p-2 bg-black/40 rounded-full text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500/80 hover:text-white"
+            className="absolute top-2 right-2 z-10 p-2 bg-[#4A2C2A]/50 rounded-full text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#A95C68]/90 hover:text-white"
             aria-label={`Delete ${book.title}`}
           >
             <TrashIcon />
@@ -41,7 +41,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onSelect, onDelete, isAdminMo
           alt={`Cover of ${book.title}`}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#4A2C2A]/70 via-[#4A2C2A]/20 to-transparent" />
         <div className="absolute bottom-0 left-0 p-4 w-full">
           <h3 className="text-white font-bold text-md drop-shadow-md truncate">{book.title}</h3>
           <p className="text-white/80 text-sm drop-shadow-sm truncate">{book.author}</p>
