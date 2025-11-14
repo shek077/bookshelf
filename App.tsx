@@ -9,6 +9,8 @@ import { PlusIcon } from './components/icons/PlusIcon';
 import SkeletonCard from './components/SkeletonCard';
 import { LockIcon } from './components/icons/LockIcon';
 import { UnlockIcon } from './components/icons/UnlockIcon';
+import PasswordModal from './components/PasswordModal';
+import ConfirmationModal from './components/ConfirmationModal';
 
 const App: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -17,6 +19,19 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAddingBook, setIsAddingBook] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [confirmationState, setConfirmationState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: (() => void) | null;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: null,
+  });
+
 
   useEffect(() => {
     // Simulate fetching books from an API
@@ -48,14 +63,46 @@ const App: React.FC = () => {
     }, 1000);
   };
 
-  const handleDeleteBook = (bookId: number) => {
-    if (window.confirm('Are you sure you want to delete this book?')) {
-      setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
-      // If the deleted book was the one selected, close the modal
-      if (selectedBook && selectedBook.id === bookId) {
-        setSelectedBook(null);
+  const requestDeleteBook = (bookId: number) => {
+    const bookToDelete = books.find(b => b.id === bookId);
+    if (!bookToDelete) return;
+
+    setConfirmationState({
+      isOpen: true,
+      title: 'Delete Book',
+      message: `Are you sure you want to permanently delete "${bookToDelete.title}"? This action cannot be undone.`,
+      onConfirm: () => () => { // onConfirm is a function that calls the actual delete handler
+        confirmDeleteBook(bookId);
       }
+    });
+  };
+
+  const confirmDeleteBook = (bookId: number) => {
+    setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
+    if (selectedBook && selectedBook.id === bookId) {
+      setSelectedBook(null);
     }
+    closeConfirmationModal();
+  };
+
+  const closeConfirmationModal = () => {
+    setConfirmationState({ isOpen: false, title: '', message: '', onConfirm: null });
+  };
+
+
+  const handleAdminToggle = () => {
+    if (isAdminMode) {
+      // If admin mode is on, just turn it off. No password needed.
+      setIsAdminMode(false);
+    } else {
+      // If admin mode is off, open the password prompt.
+      setIsPasswordModalOpen(true);
+    }
+  };
+
+  const handlePasswordVerified = () => {
+    setIsAdminMode(true);
+    setIsPasswordModalOpen(false);
   };
 
   return (
@@ -75,7 +122,7 @@ const App: React.FC = () => {
                 </button>
               )}
                <button
-                  onClick={() => setIsAdminMode(!isAdminMode)}
+                  onClick={handleAdminToggle}
                   className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-full p-3 text-black hover:bg-white/80 transition-all shadow-md hover:shadow-lg"
                   aria-label={isAdminMode ? "Disable Admin Mode" : "Enable Admin Mode"}
                 >
@@ -96,7 +143,7 @@ const App: React.FC = () => {
                   key={book.id}
                   book={book}
                   onSelect={handleSelectBook}
-                  onDelete={handleDeleteBook}
+                  onDelete={requestDeleteBook}
                   isAdminMode={isAdminMode}
                 />
               ))}
@@ -107,7 +154,7 @@ const App: React.FC = () => {
         <BookDetailModal
           book={selectedBook}
           onClose={handleCloseDetailModal}
-          onDelete={handleDeleteBook}
+          onDelete={requestDeleteBook}
           isAdminMode={isAdminMode}
         />
       )}
@@ -117,6 +164,22 @@ const App: React.FC = () => {
           onClose={() => setIsAddBookModalOpen(false)}
           onAddBook={handleAddBook}
           isAdding={isAddingBook}
+        />
+      )}
+
+      {isPasswordModalOpen && (
+        <PasswordModal
+          onClose={() => setIsPasswordModalOpen(false)}
+          onPasswordVerified={handlePasswordVerified}
+        />
+      )}
+
+      {confirmationState.isOpen && (
+        <ConfirmationModal
+          title={confirmationState.title}
+          message={confirmationState.message}
+          onConfirm={confirmationState.onConfirm!}
+          onClose={closeConfirmationModal}
         />
       )}
     </div>
