@@ -1,4 +1,3 @@
-
 export interface Book {
   id: number;
   title: string;
@@ -7,4 +6,6 @@ export interface Book {
   description: string;
   rating: number;
   purchaseUrl?: string;
+  isbn?: string;
+  tags?: string[];
 }

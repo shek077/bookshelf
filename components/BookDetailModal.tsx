@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Book } from '../types';
 import { CloseIcon } from './icons/CloseIcon';
@@ -69,9 +68,27 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose, onDele
             <div className="mb-6">
               <StarRating rating={book.rating} />
             </div>
-            <p className="text-base leading-relaxed text-[#4A2C2A]">
+            {book.isbn && (
+              <div className="mb-4">
+                <p className="text-sm font-bold text-[#6D4C41] tracking-wider uppercase">ISBN</p>
+                <p className="text-base text-[#4A2C2A] font-mono">{book.isbn}</p>
+              </div>
+            )}
+            <p className="text-base leading-relaxed text-[#4A2C2A] mb-6">
               {book.description}
             </p>
+            {book.tags && book.tags.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm font-bold text-[#6D4C41] tracking-wider uppercase mb-2">TAGS</p>
+                <div className="flex flex-wrap gap-2">
+                  {book.tags.map((tag, index) => (
+                    <span key={index} className="bg-[#D7C0AE]/50 text-[#6D4C41] text-xs font-semibold px-3 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           
           {(book.purchaseUrl || isAdminMode) && (

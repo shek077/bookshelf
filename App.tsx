@@ -11,6 +11,7 @@ import { LockIcon } from './components/icons/LockIcon';
 import { UnlockIcon } from './components/icons/UnlockIcon';
 import PasswordModal from './components/PasswordModal';
 import ConfirmationModal from './components/ConfirmationModal';
+import { SearchIcon } from './components/icons/SearchIcon';
 
 const App: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -31,6 +32,7 @@ const App: React.FC = () => {
     message: '',
     onConfirm: null,
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
 
   useEffect(() => {
@@ -103,6 +105,15 @@ const App: React.FC = () => {
     setIsPasswordModalOpen(false);
   };
 
+  const filteredBooks = books.filter(book => {
+    const query = searchQuery.toLowerCase();
+    return (
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query) ||
+      (book.tags && book.tags.some(tag => tag.toLowerCase().includes(query)))
+    );
+  });
+
   return (
     <div className="min-h-screen w-full bg-[#F5EFE6] text-[#4A2C2A]">
       <main className="container mx-auto px-4 py-8 md:py-12">
@@ -133,10 +144,29 @@ const App: React.FC = () => {
           </p>
         </header>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
-          {isLoading
-            ? Array.from({ length: 10 }).map((_, index) => <SkeletonCard key={index} />)
-            : books.map(book => (
+        <div className="mb-8 md:mb-12 px-4 md:px-0">
+            <div className="relative max-w-xl mx-auto">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#6D4C41]/60">
+                    <SearchIcon />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Search by title, author, or tag..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-[#E8DDCB]/60 backdrop-blur-xl border border-[#D7C0AE]/50 rounded-full py-3 pl-12 pr-4 text-[#4A2C2A] placeholder-[#6D4C41]/70 focus:outline-none focus:ring-2 focus:ring-[#6D4C41] transition-all"
+                    aria-label="Search books"
+                />
+            </div>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
+            {Array.from({ length: 10 }).map((_, index) => <SkeletonCard key={index} />)}
+          </div>
+        ) : filteredBooks.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
+            {filteredBooks.map(book => (
                 <BookCard
                   key={book.id}
                   book={book}
@@ -145,7 +175,20 @@ const App: React.FC = () => {
                   isAdminMode={isAdminMode}
                 />
               ))}
-        </div>
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-xl font-semibold text-[#4A2C2A]">
+              {books.length > 0 ? `No results for "${searchQuery}"` : "Your collection is empty"}
+            </p>
+            <p className="text-md text-[#6D4C41]/80 mt-2">
+              {books.length > 0 
+                ? "Try a different search term." 
+                : (isAdminMode ? "Click the '+' icon to add a new book." : "Enable admin mode to start building your collection.")
+              }
+            </p>
+          </div>
+        )}
       </main>
 
       {selectedBook && (
